@@ -34,8 +34,7 @@ def python(text: str = "is cool"):
     return 'Python {}'.format(text.replace('_', ' '))
 
 
-
-@app.route('/number/<n>')
+@app.route('/number/<int: n>')
 def number(n: int):
     """print only number"""
     return f'{n} is a number'
