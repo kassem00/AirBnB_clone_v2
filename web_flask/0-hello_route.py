@@ -16,4 +16,4 @@ def home_page(name=None):
 
 
 if __name__ == "__main__":
-    app.run(strict_slashes=False, host='0.0.0.0', port='5000')
+    app.run(host='0.0.0.0', port=5000)
