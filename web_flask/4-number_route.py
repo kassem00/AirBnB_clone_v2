@@ -36,7 +36,7 @@ def python(text: str = "is cool"):
 
 
 @app.route('/number/<n>')
-def python(n: int):
+def number(n: int):
     """print only number"""
     return f'{n} is a number'
 
