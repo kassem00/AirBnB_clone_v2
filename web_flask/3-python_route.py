@@ -22,7 +22,7 @@ def hbnb_page(name=None):
 
 
 @app.route('/c/<text>')
-def C(text):
+def C(text: str):
     """the mother of all"""
     return 'C {}'.format(text.replace('_', ' '))
 
