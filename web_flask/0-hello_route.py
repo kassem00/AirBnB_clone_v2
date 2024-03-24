@@ -6,10 +6,12 @@ from flask import Flask, render_template
 
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
 @app.route('/')
-def hello(name=None):
+def home_page(name=None):
+    """fun fact it's home page """
     return "Hello HBNB!"
 
 
