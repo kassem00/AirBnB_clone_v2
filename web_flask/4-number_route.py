@@ -40,11 +40,5 @@ def number(n: int):
     return f'{n} is a number'
 
 
-@app.route('/number_template/<int:n>')
-def number(n: int):
-    """print only number"""
-    return render_template('n'=n)
-
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
