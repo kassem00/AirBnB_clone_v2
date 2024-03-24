@@ -29,10 +29,9 @@ def C(text):
 
 @app.route('/python/')
 @app.route('/python/<text>')
-def python(text:str="is cool"):
+def python(text: str = "is cool"):
     """what can't python do ? run fast silly"""
     return 'Python {}'.format(text.replace('_', ' '))
-
 
 
 if __name__ == "__main__":
