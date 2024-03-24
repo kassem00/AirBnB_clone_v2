@@ -26,6 +26,7 @@ def C(text):
     """the mother of all"""
     return 'C {}'.format(text.replace('_', ' '))
 
+
 @app.route('/python/')
 @app.route('/python/<text>')
 def python(text:str="is cool"):
