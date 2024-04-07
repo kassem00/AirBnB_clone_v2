@@ -1,70 +1,84 @@
-# web_static_setup.pp
-# Puppet manifest to set up web servers for the deployment of web_static
+# nginx_setup.pp
+# Puppet manifest to set up Nginx and configure web static directories and files
 
-# Ensure the Nginx package is installed
-package { 'nginx':
-  ensure => installed,
+# Ensure Nginx is installed, updating and upgrading packages as necessary
+class { 'nginx':
+  manage_repo    => true,
+  package_ensure => installed,
 }
 
-# Ensure the system is updated and upgraded
-# Note: Puppet doesn't have a built-in resource for apt-get update/upgrade,
-# so we manage it with exec resource for demonstration purposes. This is not ideal for production.
-exec { 'apt-update':
-  command => '/usr/bin/apt-get update',
-  path    => ['/usr/bin', '/usr/sbin'],
-}
-
-exec { 'apt-upgrade':
-  command => '/usr/bin/apt-get upgrade -y',
-  path    => ['/usr/bin', '/usr/sbin'],
-  require => Exec['apt-update'],
-}
-
-# Create required directories
-file { '/data/web_static/releases/test':
-  ensure => 'directory',
+# Create necessary directories for web_static
+file { ['/data/web_static/releases/test', '/data/web_static/shared', '/var/www/']:
+  ensure => directory,
   owner  => 'ubuntu',
   group  => 'ubuntu',
-  mode   => '0755',
-  require => Package['nginx'],
 }
 
-file { '/data/web_static/shared':
-  ensure => 'directory',
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
-  mode   => '0755',
-  require => Package['nginx'],
-}
-
-# Create a test HTML file
+# Create test index.html in the test directory
 file { '/data/web_static/releases/test/index.html':
-  ensure  => 'file',
-  content => 'This is a test',
+  ensure  => file,
+  content => 'test 1234',
   owner   => 'ubuntu',
   group   => 'ubuntu',
-  mode    => '0644',
   require => File['/data/web_static/releases/test'],
 }
 
-# Create a symbolic link
+# Create symbolic link to current web_static version
 file { '/data/web_static/current':
-  ensure => 'link',
+  ensure => link,
   target => '/data/web_static/releases/test',
   require => File['/data/web_static/releases/test/index.html'],
 }
 
-# Configure Nginx to serve the static files
-exec { 'nginx-config':
-  command => "sed -i '38i\\tlocation /hbnb_static/ {\\n\\t\\talias /data/web_static/current/;\\n\\t}\\n' /etc/nginx/sites-available/default",
-  path    => ['/bin', '/usr/bin', '/usr/sbin'],
-  require => File['/data/web_static/current'],
+# Set owner for /data directory recursively
+file { '/data':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  recurse => true,
+}
+
+# Custom Nginx configuration
+file { '/etc/nginx/nginx.conf':
+  ensure  => file,
+  content => template('modulename/nginx.conf.erb'),
+  require => Class['nginx'],
   notify  => Service['nginx'],
 }
 
-# Ensure Nginx service is running
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => template('modulename/default-site.erb'),
+  require => Class['nginx'],
+  notify  => Service['nginx'],
+}
+
+# Insert custom location for static content
+exec { 'insert-static-location':
+  command => "sed -i '8i\\tlocation /hbnb_static/ {\\n\\t\\talias /data/web_static/current/;\\n\\t}\\n' /etc/nginx/sites-available/default",
+  path    => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'],
+  onlyif  => "test ! $(grep -q 'hbnb_static' /etc/nginx/sites-available/default)",
+  require => File['/etc/nginx/sites-available/default'],
+  notify  => Service['nginx'],
+}
+
+# Ensure nginx service is running and enabled
 service { 'nginx':
-  ensure => 'running',
-  enable => true,
-  require => Exec['nginx-config'],
+  ensure    => running,
+  enable    => true,
+  subscribe => File['/etc/nginx/nginx.conf', '/etc/nginx/sites-available/default'],
+}
+
+# Additional configurations and files as required
+file { '/var/www/index.html':
+  ensure  => file,
+  content => 'Hello World!',
+  require => File['/var/www/'],
+}
+
+file { '/usr/share/nginx/html/index.html':
+  ensure  => file,
+  content => 'Hello World!',
+  require => Class['nginx'],
+  notify  => Service['nginx'],
 }
