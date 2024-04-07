@@ -29,7 +29,7 @@ server {
 " | sudo tee /etc/nginx/sites-available/default > /dev/null
 sudo mkdir -p /var/www/
 sudo echo "Hello World!" | sudo tee /var/www/index.html > /dev/null
-sudo sed -i '6i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
+sudo sed -i '8i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
 
 sudo service nginx start
 else
