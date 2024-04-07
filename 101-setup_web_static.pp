@@ -1,3 +1,4 @@
+#!/usr/bin/puppet apply
 # nginx_setup.pp
 # Puppet manifest to set up Nginx and configure web static directories and files
 
