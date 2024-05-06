@@ -26,7 +26,7 @@ def do_pack():
     'web_static_<timestamp>.tgz'.
 
     Returns:
-        str: The path to the created archive if successful else None
+        str: The path to the created archive if successful
     """
     try:
         date = time.strftime("%Y%m%d%H%M%S")
