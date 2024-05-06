@@ -4,22 +4,29 @@ import time
 from os.path import isdir
 
 """
-Fabric script that generates a .tgz archive from the contents of the web_static folder
+Fabric script that generates a .
+tgz archive from the contents of the web_static folder
 of your AirBnB Clone repo, using the function do_pack.
-This script is intended for deployment purposes, packaging web assets for distribution.
+This script is intended for deployment purposes,
+packaging web assets for distribution.
 """
+
 
 def do_pack():
     """
-    Generate a .tgz archive from the contents of the web_static directory.
+    Generate a .tgz archive from the contents
+    of the web_static directory.
 
-    This function will create a directory named 'versions' if it does not exist,
-    then pack the contents of the 'web_static' folder into a timestamped archive
-    within the 'versions' directory. The name of the archive will be of the form
+    This function will create a directory named 'versions'
+    if it does not exist,
+    then pack the contents of the 'web_static' folder
+    into a timestamped archive
+    within the 'versions' directory.
+    The name of the archive will be of the form
     'web_static_<timestamp>.tgz'.
 
     Returns:
-        str: The path to the created archive if successful, or None if an error occurred.
+        str: The path to the created archive if successful
     """
     try:
         date = time.strftime("%Y%m%d%H%M%S")
@@ -30,4 +37,3 @@ def do_pack():
         return file_name
     except Exception as e:
         return None
-
