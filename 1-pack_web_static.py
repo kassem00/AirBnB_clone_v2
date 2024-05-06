@@ -8,9 +8,8 @@ using the function do_pack
 """
 
 
-
 def do_pack():
-    """generates a tgz archive"""
+    """  generates a tgz archive pack AirBnb for packing"""
     try:
         date = time.strftime("%Y%m%d%H%M%S")
         if not isdir("versions"):
